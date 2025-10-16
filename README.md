@@ -7,7 +7,7 @@ A lightweight Python SDK for wrapping LLM calls with safety guards, audit loggin
 
 ## Features
 
-- **🛡️ Multi-Layer Safety Guards**: PII detection, prompt injection protection, role-based access control
+- **🛡️ Multi-Layer Safety Guards**: PII detection (regex + ML), prompt injection protection, role-based access control
 - **📝 Audit Logging**: Structured logging of all LLM interactions with security metadata  
 - **⚙️ Configurable Policies**: Fine-tune guard sensitivity and fail-open behavior
 - **🔌 Provider Agnostic**: Works with OpenAI, Anthropic, or any LLM API
@@ -19,7 +19,9 @@ A lightweight Python SDK for wrapping LLM calls with safety guards, audit loggin
 
 ```bash
 pip install -e .  # Local development install
-# Or copy the src/safety_sdk directory to your project
+# Optional extras:
+#   pip install -e '.[demo]'   # Browser demo and ML guard dependencies
+#   pip install -e '.[full]'   # OpenAI + jsonschema integrations
 ```
 
 ### Basic Usage
@@ -61,6 +63,22 @@ Detects and optionally blocks personally identifiable information:
 - Email addresses, phone numbers, SSNs
 - Configurable action: `'warn'`, `'block'`, or `'mask'`
 
+### ML PII Detector (Preview)
+Transformer-backed named entity recognition guard for higher recall:
+- Configure `model_name_or_path`, scoring thresholds, and action (`'warn'` or `'block'`).
+- Accepts a pre-loaded Hugging Face pipeline for offline or cached inference.
+- Ideal for showcasing FAANG-level ML integration alongside classical regex checks.
+
+```python
+from safety_sdk import MLPIIDetectorGuard
+
+ml_guard = MLPIIDetectorGuard({
+    "model_name_or_path": "dslim/bert-base-NER",
+    "action": "block",
+    "threshold": 0.8,
+})
+```
+
 ### Injection Detector  
 Protects against prompt injection attacks:
 - Pattern matching for common injection techniques
@@ -80,6 +98,19 @@ python examples/pii_safe_extraction.py
 python examples/safe_tool_use.py
 python examples/comprehensive_safety.py
 ```
+
+### Browser-based ML guard demo
+
+Launch a FastAPI-powered playground to try the ML PII detector from your browser:
+
+```bash
+pip install -e '.[demo]'
+uvicorn examples.browser_demo.app:app --reload
+```
+
+Open <http://127.0.0.1:8000> to paste prompts or responses and inspect which entities the transformer model flags as PII. Set
+`PII_MODEL_NAME` and `PII_THRESHOLD` environment variables before starting the server to customise the model or detection
+sensitivity.
 
 ## Development
 
@@ -112,6 +143,10 @@ class CustomGuard(Guard):
 - **Content Generation**: Prevent harmful or biased content generation
 - **API Orchestration**: Audit and control access to sensitive APIs
 - **Compliance**: Meet data protection and access control requirements
+
+## Roadmap
+
+The [FAANG-Level Guardrails SDK Roadmap](docs/roadmap.md) outlines the ML upgrades, benchmarking, adversarial testing, and observability work planned for the next development cycles.
 
 ## License
 
