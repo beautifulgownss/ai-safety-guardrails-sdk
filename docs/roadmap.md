@@ -1,6 +1,6 @@
-# FAANG-Level Guardrails SDK Roadmap
+# Guardrails SDK Roadmap
 
-This roadmap captures the concrete steps required to evolve the SDK from a regex-heavy MVP into a production-grade, FAANG-ready platform. Each phase introduces capabilities that demonstrate ML depth, rigorous evaluation, operational maturity, and real-world impact.
+This roadmap captures the concrete steps required to evolve the SDK from a regex-heavy MVP into a production-grade, -ready platform. Each phase introduces capabilities that demonstrate ML depth, rigorous evaluation, operational maturity, and real-world impact.
 
 ## Phase 1 – ML-Powered Detection (Weeks 1-2)
 - **PII Detection:** Fine-tune a transformer (e.g., `bert-base-cased`) on CoNLL-2003, i2b2, and Enron email datasets. Target F1 ≥ 0.94 and ship an `MLPIIDetectorGuard` with model loading + configurable thresholds.
