@@ -67,7 +67,7 @@ Detects and optionally blocks personally identifiable information:
 Transformer-backed named entity recognition guard for higher recall:
 - Configure `model_name_or_path`, scoring thresholds, and action (`'warn'` or `'block'`).
 - Accepts a pre-loaded Hugging Face pipeline for offline or cached inference.
-- Ideal for showcasing FAANG-level ML integration alongside classical regex checks.
+- Ideal for showcasing -level ML integration alongside classical regex checks.
 
 ```python
 from safety_sdk import MLPIIDetectorGuard
@@ -146,7 +146,7 @@ class CustomGuard(Guard):
 
 ## Roadmap
 
-The [FAANG-Level Guardrails SDK Roadmap](docs/roadmap.md) outlines the ML upgrades, benchmarking, adversarial testing, and observability work planned for the next development cycles.
+The [-Level Guardrails SDK Roadmap](docs/roadmap.md) outlines the ML upgrades, benchmarking, adversarial testing, and observability work planned for the next development cycles.
 
 ## License
 
