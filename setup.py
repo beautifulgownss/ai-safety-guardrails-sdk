@@ -10,6 +10,12 @@ setup(
     install_requires=[],
     extras_require={
         "dev": ["pytest>=7.0"],
-        "full": ["jsonschema>=4.0", "openai>=1.0.0"]
+        "full": ["jsonschema>=4.0", "openai>=1.0.0"],
+        "demo": [
+            "fastapi>=0.110",
+            "uvicorn[standard]>=0.22",
+            "jinja2>=3.1",
+            "transformers>=4.37",
+        ],
     }
 )

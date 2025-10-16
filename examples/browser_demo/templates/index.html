@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>AI Safety Guardrails - Browser Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      :root {
+        color-scheme: light dark;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: #0f172a;
+        color: #e2e8f0;
+      }
+
+      body {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+      }
+
+      main {
+        width: min(960px, 92vw);
+        background: rgba(15, 23, 42, 0.9);
+        border-radius: 18px;
+        padding: 32px;
+        box-shadow: 0 16px 48px rgba(15, 23, 42, 0.45);
+      }
+
+      h1 {
+        font-size: 1.75rem;
+        margin-bottom: 0.75rem;
+      }
+
+      p.description {
+        color: #cbd5f5;
+        margin-bottom: 1.5rem;
+      }
+
+      textarea {
+        width: 100%;
+        min-height: 160px;
+        border-radius: 12px;
+        border: 1px solid rgba(148, 163, 184, 0.3);
+        padding: 12px;
+        font-size: 1rem;
+        background: rgba(15, 23, 42, 0.65);
+        color: inherit;
+        resize: vertical;
+      }
+
+      button {
+        margin-top: 16px;
+        padding: 12px 20px;
+        border-radius: 999px;
+        border: none;
+        background: linear-gradient(135deg, #6366f1, #22d3ee);
+        color: #0f172a;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+      }
+
+      button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 10px 25px rgba(99, 102, 241, 0.35);
+      }
+
+      .card {
+        margin-top: 24px;
+        padding: 20px;
+        border-radius: 14px;
+        background: rgba(30, 41, 59, 0.85);
+        border: 1px solid rgba(148, 163, 184, 0.25);
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        border-radius: 999px;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+
+      .badge.warn {
+        background: rgba(250, 204, 21, 0.15);
+        color: #facc15;
+      }
+
+      .badge.block {
+        background: rgba(248, 113, 113, 0.18);
+        color: #f87171;
+      }
+
+      .badge.allow {
+        background: rgba(45, 212, 191, 0.18);
+        color: #34d399;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 16px;
+      }
+
+      th,
+      td {
+        border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+        padding: 12px;
+        text-align: left;
+      }
+
+      th {
+        color: #94a3b8;
+        font-weight: 600;
+        font-size: 0.95rem;
+      }
+
+      code {
+        font-family: "Fira Code", "SFMono-Regular", Menlo, Monaco, Consolas, monospace;
+        font-size: 0.95rem;
+        background: rgba(148, 163, 184, 0.16);
+        padding: 2px 6px;
+        border-radius: 6px;
+      }
+
+      .error {
+        margin-top: 16px;
+        padding: 16px;
+        border-radius: 12px;
+        background: rgba(248, 113, 113, 0.16);
+        color: #fecaca;
+        border: 1px solid rgba(248, 113, 113, 0.45);
+      }
+
+      footer {
+        margin-top: 32px;
+        font-size: 0.85rem;
+        color: rgba(148, 163, 184, 0.75);
+      }
+
+      a {
+        color: #38bdf8;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Try the ML PII Guard in your browser</h1>
+      <p class="description">
+        Paste any prompt or LLM response below and the <code>MLPIIDetectorGuard</code>
+        will flag detected PII entities using a Hugging Face NER model.
+      </p>
+      <form action="/scan" method="post">
+        <textarea
+          name="text"
+          placeholder="Type or paste something that may contain PII..."
+        >{{ submitted_text }}</textarea>
+        <button type="submit">Scan text</button>
+      </form>
+
+      {% if error %}
+      <div class="error">
+        <strong>Something went wrong:</strong>
+        <div>{{ error }}</div>
+      </div>
+      {% endif %}
+
+      {% if result %}
+      <section class="card">
+        <header>
+          <span class="badge {{ result.result }}">
+            {{ result.result | upper }}
+          </span>
+          {% if result.reason %}
+          <span style="margin-left: 12px; color: rgba(226, 232, 240, 0.8);">
+            {{ result.reason }}
+          </span>
+          {% endif %}
+        </header>
+        <div style="margin-top: 12px; color: rgba(226, 232, 240, 0.7);">
+          Confidence score: <strong>{{ result.confidence }}</strong>
+        </div>
+
+        {% if result.pii_types %}
+        <table>
+          <thead>
+            <tr>
+              <th>PII Type</th>
+              <th>Detected Values</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for pii_type, values in result.pii_types.items() %}
+            <tr>
+              <td>{{ pii_type }}</td>
+              <td>{{ values | join(", ") }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+        <p style="margin-top: 16px; color: rgba(226, 232, 240, 0.7);">
+          No PII entities were detected in this text.
+        </p>
+        {% endif %}
+      </section>
+      {% endif %}
+
+      <footer>
+        Configure the model with the <code>PII_MODEL_NAME</code> and
+        <code>PII_THRESHOLD</code> environment variables before launching the server.
+        Downloading the default <code>dslim/bert-base-NER</code> weights happens on the first run and
+        may take a minute.
+      </footer>
+    </main>
+  </body>
+</html>
