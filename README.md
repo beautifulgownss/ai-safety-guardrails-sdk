@@ -146,7 +146,7 @@ class CustomGuard(Guard):
 
 ## Roadmap
 
-The [-Level Guardrails SDK Roadmap](docs/roadmap.md) outlines the ML upgrades, benchmarking, adversarial testing, and observability work planned for the next development cycles.
+The [Guardrails SDK Roadmap](docs/roadmap.md) outlines the ML upgrades, benchmarking, adversarial testing, and observability work planned for the next development cycles.
 
 ## License
 
