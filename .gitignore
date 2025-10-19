@@ -1,6 +1,18 @@
+# Node modules and build artifacts
+node_modules/
+.next/
+*.log
+
+# macOS
+.DS_Store
+
 __pycache__/
 *.py[cod]
 *.egg-info/
 .env
 .venv
 venv/
+node_modules/
+.next/
+*.log
+.DS_Store
