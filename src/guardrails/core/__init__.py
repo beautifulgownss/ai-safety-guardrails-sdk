@@ -1,6 +1,6 @@
-"""Public package exports for the AI Safety Guardrails SDK."""
+"""Core guard orchestration components."""
 
-from .core.guard import (
+from .guard import (
     BaseAuditLogger,
     BaseRule,
     Guard,
@@ -15,9 +15,6 @@ from .core.guard import (
     RuleResult,
     StdoutAuditLogger,
 )
-from .rules.injection import InjectionRule
-from .rules.pii import PIIRule
-from .rules.schema import SchemaRule
 
 __all__ = [
     "BaseAuditLogger",
@@ -27,16 +24,10 @@ __all__ = [
     "GuardError",
     "GuardReport",
     "GuardViolation",
-    "InjectionRule",
-    "PIIRule",
     "NullAuditLogger",
     "PerformanceMonitor",
     "RBACError",
     "RuleContext",
     "RuleResult",
-    "SchemaRule",
     "StdoutAuditLogger",
 ]
-
-__version__ = "0.2.0"
-

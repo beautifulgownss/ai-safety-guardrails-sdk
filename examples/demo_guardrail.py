@@ -1,34 +1,46 @@
-"""Minimal demonstration of the AI Safety Guardrails SDK."""
+"""Minimal CLI demo showcasing guardrail enforcement."""
 
-from guardrails import Guard, ValidationError
-from guardrails.logger import guard_logger
+from guardrails import (
+    Guard,
+    GuardViolation,
+    InjectionRule,
+    PIIRule,
+    SchemaRule,
+    StdoutAuditLogger,
+)
 from pydantic import BaseModel
 
 
 class ResponseSchema(BaseModel):
     message: str
+    channel: str
 
 
-guard = Guard(rules=["no_pii", "schema_check"], schema=ResponseSchema)
+guard = Guard(
+    rules=[PIIRule(), InjectionRule(), SchemaRule(ResponseSchema)],
+    audit_logger=StdoutAuditLogger(),
+)
 
 
-@guard
+@guard.protect
 def generate_service_response(prompt: str) -> dict:
-    """Simulate an unsafe model response that leaks PII."""
-    return {"message": "Sure, call me at 555-1234 to get started."}
+    return {
+        "message": "Sure, call me at 555-1234 to get started.",
+        "channel": "voice",
+    }
 
 
 def main() -> None:
     try:
         generate_service_response("Tell me about your premium tier")
-    except ValidationError as exc:
-        guard_logger.error("Guardrail triggered: %s", exc)
-        if getattr(exc, "details", None):
-            guard_logger.error("Details: %s", exc.details)
+    except GuardViolation as exc:
+        print("Guardrail triggered:")
+        for failure in exc.results:
+            print(f"- {failure.rule}: {failure.details}")
 
-    safe_payload = {"message": "Learn more at example.com/safety"}
-    guard.validate(safe_payload)
-    print("All checks passed:", safe_payload["message"])
+    safe_payload = {"message": "Learn more at example.com/safety", "channel": "web"}
+    report = guard.check(safe_payload)
+    print("Post-validation report passed:", report.passed)
 
 
 if __name__ == "__main__":
