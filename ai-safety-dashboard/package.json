@@ -9,9 +9,16 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@chakra-ui/icons": "^2.1.1",
+    "@chakra-ui/next-js": "^2.1.4",
+    "@chakra-ui/react": "^3.2.1",
+    "@emotion/react": "^11.13.5",
+    "@emotion/styled": "^11.13.5",
+    "framer-motion": "^11.15.0",
+    "next": "15.5.5",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "next": "15.5.5"
+    "recharts": "^2.12.8"
   },
   "devDependencies": {
     "typescript": "^5",

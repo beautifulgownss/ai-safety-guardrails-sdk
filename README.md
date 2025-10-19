@@ -1,50 +1,51 @@
-# 🧠 AI Safety Guardrails SDK
+# AI Safety Guardrails SDK
 
-### A full-stack framework for analyzing, detecting, and visualizing hallucinations in LLM responses.
+## 🧠 Overview
+AI Safety Guardrails SDK enforces safety and structure around LLM and agent responses with layered validation. It ships with defenses for PII leakage, prompt injection signals, schema enforcement, and rich logging so you can trust every token your agents emit.
 
----
-
-## 🚀 Overview
-**AI Safety Guardrails SDK** is a lightweight FastAPI-based backend and a modern Next.js + Tailwind dashboard that work together to evaluate AI model outputs for factual consistency.  
-It provides an extensible JSON schema for safety checks and a clean UI for rapid experimentation.
-
-| Component | Description |
-|------------|--------------|
-| **Backend** | FastAPI service exposing `/api/detect` for hallucination and confidence analysis |
-| **Frontend** | Next.js 15 App-Router dashboard with Tailwind 4 styling |
-| **Use Case** | Developers evaluating LLM reliability, AI agents, or prompt pipelines |
-
----
+## 🚀 Features
+- PII detection
+- Prompt injection filtering
+- Schema and type validation
+- Guardrail decorator for wrapping functions or agent responses
+- Logging and violation reporting
 
 ## 🧩 Architecture
+```
+Input → Pre-Validation → LLM/Agent → Post-Validation → Output
+```
 
-    ┌──────────────────────────┐
-    │     Next.js Dashboard    │  ← Context + Response inputs
-    └────────────┬─────────────┘
-                 │ POST /api/detect
-                 ▼
-    ┌──────────────────────────┐
-    │     FastAPI Backend      │  ← Analysis logic, scoring, summary
-    └────────────┬─────────────┘
-                 │
-                 ▼
-    ┌──────────────────────────┐
-    │   AI Safety SDK Core     │  ← Guardrails, metrics, and extensions
-    └──────────────────────────┘
+## ⚙️ Quick Start
+```python
+from guardrails import Guard, ValidationError
 
----
+guard = Guard(rules=["no_pii", "schema_check"])
+
+@guard
+def generate_response(prompt):
+    return "My phone number is 555-1234"
+
+try:
+    result = generate_response("Tell me about your service")
+except ValidationError as e:
+    print("Guardrail triggered:", e)
+```
+
+## 🧪 Testing
+Run the test suite to validate guardrail rules:
+```bash
+pytest
+```
 
 ## 🧰 Tech Stack
-- **Frontend:** Next.js 15 (App Router), React 18, Tailwind 4, TypeScript  
-- **Backend:** FastAPI (Python 3.13)  
-- **Infrastructure:** Uvicorn dev server  
-- **Version Control:** Git + GitHub  
+Python · Regex · Pydantic · Logging
 
----
+## 🧠 Skills Demonstrated
+- AI Safety and Reliability
+- SDK Architecture Design
+- Input/Output Validation
+- Modular Python Engineering
 
-## ⚙️ Local Setup
-
-### 1️⃣ Clone the repo
-```bash
-git clone https://github.com/beautifulgownss/ai-safety-guardrails-sdk.git
-cd ai-safety-guardrails-sdk
+## 🎥 Demo
+- Loom walkthrough: _coming soon_
+- Explore ready-to-run examples in `examples/`
